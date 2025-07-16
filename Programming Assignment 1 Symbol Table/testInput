@@ -1,0 +1,40 @@
+open
+dump
+insert kentucky 1848
+  insert florida wet
+insert Arkansas 3
+dump
+lookup Kentucky
+lookup kentucky
+lookup Hawaii
+lookup florida
+global kentucky
+insert kentucky bad
+dump
+open
+  i Texas 5
+  i Colorado 4
+o
+  i Ohio 8
+  i Idaho 7
+  i Mississippi 15
+  d
+L Texas
+g Texas
+g Mississippi
+l Ohio
+l Arkansas
+g Arkansas
+i last_entry_on_top? 9999
+d
+c
+d
+c
+d
+g Ohio
+c
+c
+d
+c
+i Bogus 1
+q

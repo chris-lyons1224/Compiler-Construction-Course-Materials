@@ -1,0 +1,25 @@
+This directory holds Raphael Finkel's solution to Assignment 1 for CS541,
+programmed 4/2013 and updated several times thereafter.
+It implements symbol-table routines in these files:
+
+	P1.java: main program, command interpreter
+	SymbolTable.java: implements the symbol table
+	Symb.java: generic symbol
+	TestSym.java: specific symbol, extends Symb by adding a numeric value
+	DuplicateException.java: exception thrown by insert()
+	EmptySTException.java: exception thrown by insert() and closeScope()
+
+The implementation is straightforward, except that the symbol-table levels are
+represented by a linked list with new levels placed on the front and removed
+from the front.  This arrangement allows dump() and globalLookup() to navigate
+through the levels from local to global.  These routines require at least Java
+1.6 because they use the enhanced for-loop construct.
+
+The Makefile has these rules:
+
+	default: compile the program
+	test: execute the program with testInput as data (compare result to
+		testOutput)
+	style: check the style of the program; there are no significant
+		style errors.
+	clean: remove results of compilation and tags

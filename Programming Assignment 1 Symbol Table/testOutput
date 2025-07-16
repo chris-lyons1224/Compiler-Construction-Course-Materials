@@ -1,0 +1,127 @@
+java -classpath ./classes P1 < testInput
+open
+New scope opened.
+dump
+Contents of symbol table:
+{}
+insert
+Enter symbol: kentucky
+Enter associated value: 1848
+(kentucky:1848) entered into symbol table.
+insert
+Enter symbol: florida
+Enter associated value: wet
+(florida:wet) entered into symbol table.
+insert
+Enter symbol: Arkansas
+Enter associated value: 3
+(Arkansas:3) entered into symbol table.
+dump
+Contents of symbol table:
+{(florida:wet), (kentucky:1848), (Arkansas:3)}
+lookup
+Enter symbol: Kentucky
+Kentucky not found in top scope.
+lookup
+Enter symbol: kentucky
+(kentucky:1848) found in top scope
+lookup
+Enter symbol: Hawaii
+Hawaii not found in top scope.
+lookup
+Enter symbol: florida
+(florida:wet) found in top scope
+global
+Enter symbol: kentucky
+(kentucky:1848) found in symbol table.
+insert
+Enter symbol: kentucky
+Enter associated value: bad
+Attempt to insert duplicate symbol.
+dump
+Contents of symbol table:
+{(florida:wet), (kentucky:1848), (Arkansas:3)}
+open
+New scope opened.
+i
+Enter symbol: Texas
+Enter associated value: 5
+(Texas:5) entered into symbol table.
+i
+Enter symbol: Colorado
+Enter associated value: 4
+(Colorado:4) entered into symbol table.
+op
+New scope opened.
+i
+Enter symbol: Ohio
+Enter associated value: 8
+(Ohio:8) entered into symbol table.
+i
+Enter symbol: Idaho
+Enter associated value: 7
+(Idaho:7) entered into symbol table.
+i
+Enter symbol: Mississippi
+Enter associated value: 15
+(Mississippi:15) entered into symbol table.
+d
+Contents of symbol table:
+{(Mississippi:15), (Ohio:8), (Idaho:7)}
+{(Texas:5), (Colorado:4)}
+{(florida:wet), (kentucky:1848), (Arkansas:3)}
+L
+Enter symbol: Texas
+Texas not found in top scope.
+g
+Enter symbol: Texas
+(Texas:5) found in symbol table.
+g
+Enter symbol: Mississippi
+(Mississippi:15) found in symbol table.
+l
+Enter symbol: Ohio
+(Ohio:8) found in top scope
+l
+Enter symbol: Arkansas
+Arkansas not found in top scope.
+g
+Enter symbol: Arkansas
+(Arkansas:3) found in symbol table.
+i
+Enter symbol: last_entry_on_top?
+Enter associated value: 9999
+(last_entry_on_top?:9999) entered into symbol table.
+d
+Contents of symbol table:
+{(Mississippi:15), (last_entry_on_top?:9999), (Ohio:8), (Idaho:7)}
+{(Texas:5), (Colorado:4)}
+{(florida:wet), (kentucky:1848), (Arkansas:3)}
+c
+Top scope closed.
+d
+Contents of symbol table:
+{(Texas:5), (Colorado:4)}
+{(florida:wet), (kentucky:1848), (Arkansas:3)}
+c
+Top scope closed.
+d
+Contents of symbol table:
+{(florida:wet), (kentucky:1848), (Arkansas:3)}
+g
+Enter symbol: Ohio
+Ohio not found in symbol table
+c
+Top scope closed.
+c
+Cannot close; no scopes are open.
+d
+Contents of symbol table:
+c
+Cannot close; no scopes are open.
+i
+Enter symbol: Bogus
+Enter associated value: 1
+Cannot insert; no scopes are open.
+q
+Testing done
