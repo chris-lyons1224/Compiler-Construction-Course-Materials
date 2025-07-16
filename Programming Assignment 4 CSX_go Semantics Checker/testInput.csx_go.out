@@ -1,0 +1,53 @@
+java -classpath ./classes:/homes/raphael/courses/cs541/public/cup/java-cup-10k.jar P4 testInput.csx_go
+
+
+Begin CSX compilation of testInput.csx_go
+
+CSX program parsed correctly.
+Error (line 5): Duplicate formal parameter a.
+Error (line 6): Duplicate identifier b.
+Error (line 10): No such symbol: C.
+Error (line 5): Function badFunction has no return statement.
+Error (line 15): Must return INTEGER, not BOOL.
+Error (line 16): Must return a value from a non-void function.
+Error (line 20): Accessing an unassigned variable globalVar.
+Error (line 28): No such symbol: a.
+Error (line 29): Must not return a value from a void function.
+Error (line 32): STRING cannot be assigned to CHARARRAY.
+Error (line 38): Array must have positive length, not 0.
+Error (line 40): BOOL cannot be assigned to INTEGER.
+Error (line 42): Subscript must be int or char, not STRING.
+Error (line 43): Cannot apply subscript to non-array myIntVar.
+Error (line 44): INTEGER cannot be assigned to INTEGERARRAY.
+Error (line 46): Condition for "if" must be bool, not INTEGER.
+Error (line 47): Must assign to a variable, not to a CONSTANT.
+Error (line 49): Must assign to a variable, not to a FUNCTION.
+Error (line 52): Condition for "for" must be bool, not INTEGER.
+Error (line 54): Duplicate identifier a.
+Error (line 66): foo is not declared.
+Error (line 67): Cannot cast from type STRING.
+Error (line 68): Operand for "not" must be bool, not INTEGER.
+Error (line 69): Left operand for + must be int or char, not STRING.
+Error (line 70): Right operand for + must be int or char, not STRING.
+Error (line 71): Left operand for && must be bool, not INTEGER.
+Error (line 72): Right operand for && must be bool, not INTEGER.
+Error (line 73): Right operand for != must match left (bool), not INTEGERARRAY.
+Error (line 74): Right operand for == must match left (INTEGER), not BOOL.
+Error (line 75): Left operand for == must be int, char, or bool, not STRING.
+Error (line 77): Right operand for == must match left (INTEGER), not BOOL.
+Error (line 78): Left operand for == must be int, char, or bool, not INTEGERARRAY.
+Error (line 80): Can only read into a variable, not a CONSTANT.
+Error (line 81): Can only read int or char variables, not INTEGERARRAY.
+Error (line 83): Cannot print items of type INTEGERARRAY.
+Error (line 83): Cannot print items of type FUNCTION.
+Error (line 84): bar is not declared.
+Error (line 85): Attempt to call a non-function: a1; it is a VARIABLE.
+Error (line 86): Attempt to call a non-function: b; it is a VARIABLE.
+Error (line 87): Wrong number of actual parameters to intFunction; 1 instead of 2.
+Error (line 89): Actual parameter 2 to intFunction, type INTEGER, does not match formal, type CHARARRAY.
+Error (line 90): Actual parameter 2 to intFunction, type INTEGER, does not match formal, type CHARARRAY.
+Error (line 91): Cannot call INTEGER function as a statement.
+Error (line 94): Already declared in this scope: globalVar.
+Error (line 1): Last function must be main().
+
+CSX compilation halted due to type errors.

@@ -1,0 +1,57 @@
+
+
+Begin CSX compilation of testInput-EC1.csx_go
+
+CSX program parsed correctly.
+Error (line 5): Duplicate formal parameter a.
+Error (line 6): Duplicate identifier b.
+Error (line 5): Function badFunction has no return statement.
+Error (line 10): No such symbol: anotherGlobal.
+Error (line 12): Must return int, not bool.
+Error (line 13): Must return a value from a non-void function.
+Error (line 17): Accessing an unassigned variable globalVar.
+Error (line 25): No such symbol: a.
+Error (line 26): Must not return a value from a void function.
+Error (line 29): string cannot be assigned to char array.
+Error (line 35): Array must have positive length, not 0.
+Error (line 37): bool cannot be assigned to int.
+Error (line 39): Subscript must be int or char, not string.
+Error (line 40): Cannot apply subscript to non-array myIntVar.
+Error (line 41): int cannot be assigned to int array.
+Error (line 43): Condition for "if" must be bool, not int.
+Error (line 44): Must assign to a variable, not to a constant.
+Error (line 46): Must assign to a variable, not to a function.
+Error (line 49): Condition for "for" must be bool, not int.
+Error (line 51): Duplicate identifier a.
+Error (line 53): Not in a loop named fooo.
+Error (line 54): Not in a loop named fooo.
+Error (line 57): Can only read into a variable, not a current label.
+Error (line 61): Loop label foo already in use.
+Error (line 63): Not in a loop named foo.
+Error (line 65): Attempt to call a non-function: foo; it is a label.
+Error (line 66): Cannot cast from type string.
+Error (line 67): Operand for "not" must be bool, not int.
+Error (line 68): Left operand for + must be int or char, not string.
+Error (line 69): Right operand for + must be int or char, not string.
+Error (line 70): Left operand for && must be bool, not int.
+Error (line 71): Right operand for && must be bool, not int.
+Error (line 72): Right operand for != must match left (bool), not int array.
+Error (line 73): Right operand for == must match left (int), not bool.
+Error (line 74): Left operand for == must be int, char, or bool, not string.
+Error (line 76): Right operand for == must match left (int), not bool.
+Error (line 77): Left operand for == must be int, char, or bool, not int array.
+Error (line 79): Can only read into a variable, not a constant.
+Error (line 80): Can only read int or char variables, not int array.
+Error (line 82): Cannot print items of type int array.
+Error (line 82): Cannot print items of type function.
+Error (line 83): bar is not declared.
+Error (line 84): Attempt to call a non-function: a; it is a variable.
+Error (line 85): Attempt to call a non-function: b; it is a variable.
+Error (line 86): Wrong number of actual parameters to intFunction; 1 instead of 2.
+Error (line 88): Actual parameter 2 to intFunction, type int, does not match formal, type char array.
+Error (line 89): Actual parameter 2 to intFunction, type int, does not match formal, type char array.
+Error (line 90): Cannot call int function as a statement.
+Error (line 93): Already declared in this scope: globalVar.
+Error (line 1): Last function must be main().
+
+CSX compilation halted due to type errors.

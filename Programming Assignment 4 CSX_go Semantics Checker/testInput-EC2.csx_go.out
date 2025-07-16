@@ -1,0 +1,10 @@
+
+
+Begin CSX compilation of testInput-EC2.csx_go
+
+CSX program parsed correctly.
+Error (line 9): Accessing an unassigned variable a.
+Error (line 10): Accessing an unassigned variable b.
+Error (line 11): Accessing an unassigned variable c.
+
+CSX compilation halted due to type errors.

@@ -1,0 +1,60 @@
+This directory holds Raphael Finkel's solution to Assignment 4 for CS541,
+programmed 5/2013 and updated several times thereafter.
+It implements a semantics checker for CSX in these files:
+
+	P4.java: main program
+	csx.jlex: JFlex scanner specification, only slightly modified from
+		assignment 3: now also stores lower-case version of identifiers.
+	csx.cup: CUP parser specification, identical to assignment 3.
+	ast.java: abstract syntax tree code, with classes for each nonterminal, each
+		with an unparse() method.  Taken from assignment 3, but now with a
+		checkSemantics() method in each class.
+	Scanner.java: as provided in the assignment, identical to assignment 3
+	SymbolTable.java: implements the symbol table, slightly modified from
+		assignment 1
+	DuplicateException.java: Symbol-table exception, identical to assignment 1
+	EmptySTException.java: Symbol-table exception, identical to assignment 1
+	Symb.java: generic symbol, slightly enhanced from assignment 1
+	SymbolInfo.java: extends Symb.java to hold type, kind, and occasionally
+		other information
+	TypeEnum.java: an enumeration of possible types
+	KindEnum.java: an enumeration of possible kinds
+
+The implementation uses these techniques:
+
+	The semantics-checking code is called checkSemantics() instead of
+		checkType(), because it checks more than type.
+	checkSemantics() uses the symbol table to discover types and kinds of
+		identifiers.
+	WhileNode stores the label both at the current level of the symbol table (as
+		kind LABEL; it conflicts with any other use of that identifier at the
+		current level) and in a new level (as kind CURRENTLABEL, so a break or
+		continue inside the loop can be associated with it)
+	ASTNode provides an error() method that takes an arbitrary number of String
+		parameters, which it concatenates along with the current line number to
+		make an error message.
+	ASTNode provides setPosition(), which acquires line-number information in
+		AST nodes that otherwise would not have it, because there can be
+		semantics errors in constructs that do not need line numbers in
+		assignment 3.
+	In situations where it is certain that closing a scope and inserting an
+		identifier should not throw an exception, the code calls
+		closeScopeNoError() and insertNoEmptyError(), which suppress those
+		exceptions (with an error message).
+	All situations that should never arise are covered by a call to error() with
+		an "internal error" message.
+
+The Makefile has these rules:
+
+	default: compile the program
+	test: execute the program with $GOAL.csx as data; by default, GOAL=testInput
+		(expected output: test.out; this file tests every possible semantic error) 
+	testAll: execute the program over all files in the tests/ directory.  We
+		expect no errors; these programs are all semantically correct.
+		I added to the original test suite:
+			test-34 (casts)
+			test-35 (passing formal array as actual)
+			test-43 (assignment of arrays)
+	style: check the style of the program; there are no significant
+		style errors.
+	clean: remove results of compilation and tags

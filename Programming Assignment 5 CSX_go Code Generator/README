@@ -1,0 +1,66 @@
+This directory holds Raphael Finkel's solution to Assignment 5 for CS541,
+programmed 5/2013 and updated several times thereafter.
+It implements a code generator for CSX in these files:
+
+	P5.java: main program
+	csx.jlex: JFlex scanner specification, from assignment 4.
+	csx.cup: CUP parser specification, from assignment 4.
+	Scanner.java: as provided in the assignment, identical to assignment 4
+	SymbolTable.java: implements the symbol table, from assignment 4
+	DuplicateException.java: Symbol-table exception, from assignment 4
+	EmptySTException.java: Symbol-table exception, from assignment 4
+	Symb.java: generic symbol, from assignment 4
+	SymbolInfo.java: extends Symb.java to hold type, kind, and occasionally
+		other information, slightly enhanced from assignment 4
+	TypeEnum.java: an enumeration of possible types; enhanced from assignment 4
+	KindEnum.java: an enumeration of possible kinds, from assignment 4
+	ast.java: abstract syntax tree code, with classes for each nonterminal, each
+		with unparse(), checkSemantics() from assignment 4, not with cg() for
+		generating code in each class.
+	CSXLib.java: provided in the assignment; runtime utility library
+
+The implementation uses these techniques:
+
+	The provided SyntaxErrorException.java has been deleted; it isn't needed.
+	Bounds-checking routines in CSXLib.java are not used (handled by the Java
+		runtime)
+	Instead of distinguishing semantics from code-generation errors, ASTNode
+		provides a single errors variable.
+	The symbols that semantics checking inserts and finds in the symbol table
+		are now given names and retained in the associated AST nodes so code
+		generation has direct access to them without further recourse to the
+		symbol table.
+	To distinguish whether a field is global or local, ASTNode has a static
+		variable doingFields, which ProgramNode.cg() set to false once code
+		generation starts on methods.
+	ProgramNode.cg() creates a void main(String) method in the Jasmin output.
+		Its purpose is to initialize fields (effectively: set up global arrays)
+		and then call the CSX main() method.
+	ASTNode.genCode() takes an arbitrary number of String parameters, which it
+		concatenates with spaces in between and writes to the Jasmin file.
+		Jasmin comments are easy to put in; just start them with a semicolon.
+		It indents each line that does not start with a dot.
+	At first, I thought I could use type I for int, bool, and char, but arrays
+		need to be better typed for the JVM, so I now use I, Z, C.
+	ASTNode.genCode() remembers the last code emitted, to avoid ending a method
+		with a label
+	For generating good code, I use ASTNode.genConstant() to select among
+		iconst_n, iconst_m1, bipush, sipush, and ldc, as appropriate
+	For generating good code, I use ASTNode.genLoadStore() to select among
+		(i|a)(load|store)(_n| n), as appropriate
+	For debugging, I invoke ASTNode.genLine() to output line numbers.
+	Method declarations use an exact count of registers need for .limit locals.
+	ASTNode keeps track of current and maximum stack depth for an exact count of
+		.limit stack
+
+The Makefile has these rules:
+
+	default: compile the program
+	test: execute the program with ../proj4/test-$GOAL.csx as data; by default,
+		GOAL=01
+	testAll: execute the program over all files in ../proj4/tests/.
+		The Jasmin files remain in /tmp/testOut/test-XX.csx.j for inspection.
+		Expected output is in testAll.out
+	style: check the style of the program; there are no significant
+		style errors.
+	clean: remove results of compilation and tags

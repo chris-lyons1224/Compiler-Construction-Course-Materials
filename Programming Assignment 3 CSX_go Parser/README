@@ -1,0 +1,36 @@
+This directory holds Raphael Finkel's solution to Assignment 3 for CS541,
+programmed 4/2013 and updated several times thereafter.
+It implements a parser for CSX in these files:
+
+	P3.java: main program
+	csx.jlex: JFlex scanner specification, only slightly modified from
+		assignment 2
+	ast.java: abstract syntax tree code, with classes for each nonterminal, each
+		with an unparse() method
+	csx.cup: CUP parser specification, with the grammar taken almost verbatim
+		from the assignment, decorated with calls to build the abstract syntax
+		tree.
+	Scanner.java: as provided in the assignment, with minor formatting and style
+		fixes.
+
+The implementation uses these techniques:
+
+	The classes in ast.java are not precisely those suggested in the assignment.
+	Not every class has unparse(), because some, like MethodDeclsNode, are only
+		used temporarily as the parser builds the abstract syntax tree.
+	Lists, such as lists of fields and methods, are built using ArrayList, not
+		explicitly linked.
+	ast.java requires at least Java 1.6 because it uses the enhanced for-loop
+		construct.
+	ExprNode and its subclasses provide a version of unparse() that takes a
+		Boolean "topLevel"; if set, they supress outer parentheses.  This
+		technique avoids some unnecessary parentheses.
+
+The Makefile has these rules:
+
+	default: compile the program
+	test: execute the program with $GOAL.csx as data; by default, GOAL=test
+		(expected output: test.out) Other input file: test.2.csx.
+	style: check the style of the program; there are no significant
+		style errors.
+	clean: remove results of compilation and tags

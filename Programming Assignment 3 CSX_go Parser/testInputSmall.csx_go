@@ -1,0 +1,56 @@
+package test 
+@@ sample test prog for proj #2 (scanner) --
+   may not parse,  type-check or execute
+   correctly @@
+
+var a = 0 @@ init to 0@@;
+var b = ~123;
+var bigPos = 11111111111111111111111111111111111111;
+var bigNeg = ~2222222222222222222222222222222222222;
+var ja = true;
+var nein = false;
+var c = 'c';
+var nl = '\n';
+var tab = '\t';
+var bslash = '\\';
+var tic = '\'';
+CONst ten = 10;
+var ar int[100];
+var str = " Ans = ";
+
+func p(j INT) {@@
+	@@print "Ans = ", j+1;
+}
+
+func f(i int) int {
+        ar[i] = 100;
+	ReturN i+1;
+}
+
+func testMany() bool {
+	read b;
+
+	if b || true {
+		b = b && false;
+	} else {
+		b = !(b || true);
+	}
+
+	for i != 0 {
+		i = i*i/2;
+		i = i/(i-2);
+	}
+
+	if i == 10 || i < 21 || i > ~17 || i != 123 {
+		Print( i);
+		p(17);
+	}
+
+	if i >= f(~3) || i <= f(i-1) {
+		print i, f(i) , "\n";
+	}
+
+} // testMany
+
+// That's all folks
+

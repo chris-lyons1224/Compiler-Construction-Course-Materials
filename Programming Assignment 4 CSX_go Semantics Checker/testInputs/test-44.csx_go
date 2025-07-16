@@ -1,0 +1,58 @@
+%% Test 44
+	Created: December 2013 Raphael Finkel; Modified Jun 2020
+
+	Tests break and continue statements and labelled for loops
+
+%%
+
+package p44csx
+func main() {
+    var a int;
+    var b int;
+    print "Testing Program p44csx", "\n";
+    a = 0;
+    loop1: for a < 10 {
+        a = a + 1;
+        if a > 2 {
+            break loop1;
+        }
+    } // loop1
+    if a != 3 {
+        print "ERROR: 1-level break fails; a is not 3, but rather ", a, '\n';
+    }
+    a = 0;
+    b = 0;
+    loop2: for a < 10 {
+        b = a;
+        loop3: for b < 10 {
+            a = a + 1;
+            b = b + 1;
+            if b > 2 {
+                break loop2;
+            }
+        } // loop3
+        a = 100;
+    } // loop2
+    if (a != 3) || (b != 3) {
+        print "ERROR: 2-level break fails; a=", a, "; b=", b, '\n';
+    }
+    a = 0;
+    b = 0;
+    loop3: for a < 10 {
+        a = a + 1;
+        b = 0;
+        loop4: for b < 10 {
+            if b == 0 {
+                continue loop3;
+            }
+            b = b + 1;
+        } // loop4
+        print "ERROR: continue failed; a=", a, '\n';
+    } // loop3
+    if (a != 10) || (b != 0) {
+        print "ERROR: 2-level continue fails; a=", a, "; b=", b, '\n';
+    }
+    print "Test completed", "\n";
+} // func main
+// package p44csx
+// vim:filetype=go:	

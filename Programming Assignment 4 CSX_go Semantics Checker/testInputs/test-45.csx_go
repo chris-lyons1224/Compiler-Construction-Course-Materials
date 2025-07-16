@@ -1,0 +1,66 @@
+%% Test 45
+  Created: Jun 2020 Raphael Finkel
+
+ Check declarations within blocks (extra credit)
+
+%%
+
+package p45csx
+func main() {
+	var a int;
+	var cont1 bool;
+	a = 13;
+
+	print "before loop: a (13) ", a, "\n";
+	cont1 = true;
+	for cont1 {
+		var b int;
+		var cont2 bool;
+		print "in loop: a (13) ", a, "\n";
+		a = 14;
+		print "after assignment: a (14) ", a, "\n";
+		b = 10;
+		print "after assignment: b (10) ", b, "\n";
+		cont2 = true;
+		for cont2 {
+			var b int;
+			print "in deeper loop: a (14) ", a, "\n";
+			b = 11;
+			print "after assignment: b (11) ", b, "\n";
+			cont2 = false;
+		}
+		print "after deeper loop: b (10) ", b, "\n";
+		cont1 = false;
+	} // loop
+	print "after loop: a (14) ", a, "\n";
+	if true {
+		var b int;
+		print "in true branch: a (14) ", a, "\n";
+		a = 15;
+		print "after assignment: a (15) ", a, "\n";
+		b = 12;
+		print "after assignment: b (12) ", b, "\n";
+	} // if
+	print "after first conditional: a (15) ", a, "\n";
+	if false {
+	} else {
+		var b int;
+		print "in false branch: a (15) ", a, "\n";
+		a = 16;
+		print "after assignment: a (16) ", a, "\n";
+		b = 13;
+		print "after assignment: b (13) ", b, "\n";
+	} // if
+	print "after second conditional: a (16) ", a, "\n";
+	{ // simply a block
+		var b int;
+		print "in block: a (16) ", a, "\n";
+		a = 17;
+		print "after assignment: a (17) ", a, "\n";
+		b = 14;
+		print "after assignment: b (14) ", b, "\n";
+	} // block
+	print "after block: a (17) ", a, "\n";
+} // main
+// package p45csx
+// vim:filetype=go:	

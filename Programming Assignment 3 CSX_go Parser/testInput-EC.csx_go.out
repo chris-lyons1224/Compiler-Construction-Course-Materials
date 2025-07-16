@@ -1,0 +1,12 @@
+CSX_go program parsed correctly.
+Here is its unparsing:
+1:	package bar
+3:	func foo() int {
+5:	    lab1: for c || 4 {
+6:	        lab2: for true {
+7:	            continue lab1;
+8:	            break lab2;
+6:	        } // lab2
+5:	    } // lab1
+3:	} // func foo
+1:	// package bar
