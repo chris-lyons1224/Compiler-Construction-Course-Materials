@@ -1,0 +1,13 @@
+package globalVar
+
+	// testing only use-before-assign
+
+	func main() {
+		var a int;
+		var b int;
+		var c int;
+		print a;
+		a = b + 1;
+		a = 1 + c;
+		print a; // OK now
+	}

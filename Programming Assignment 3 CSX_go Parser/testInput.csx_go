@@ -1,0 +1,32 @@
+package foo
+	var a int;
+	var b int[34];
+	var c = 45;
+	const d = false;
+	var x = (3 + 'c' / 5 != x * y);
+
+	func bar(a int, b[] bool) int {
+		var c = b[45];
+		return;
+		for c || 4 {
+			var d int;
+			if (2 == int(4+5)) {
+				if (5) {
+					matches();
+				} else {
+					matches(what, foo(a), 4/5);
+				}
+			}
+		}
+	} // bar
+
+	func foo(a int, b []int) int {
+		return a[4+5]+4;
+		read a, b[1], c;
+		print a, b[2], c;
+	} // foo
+
+	func baz() bool {
+		return 1;
+	} // baz
+

@@ -1,0 +1,272 @@
+/***
+ *
+ * Started from a Java CUP Specification For CSX-lite, a Small Subset
+ * of The CSX Language,  Prepared by Charles Fischer.
+ * Modified by Raphael Finkel 2018 for CSX_go.
+ *
+ ***/
+
+/* Preliminaries to set up and use the scanner.  */
+
+import java_cup.runtime.*;
+
+parser code {:
+	public void syntax_error(Symbol cur_token) {
+		report_error("CSX_go syntax error at line " +
+			((CSXToken)cur_token.value).linenum, null);
+		}
+:};
+
+init with {: 
+	// no initialization
+:};
+scan with {:
+	return Scanner.next_token();
+:};
+
+/* Terminals (tokens returned by the scanner). */
+terminal CSXIdentifierToken IDENTIFIER; // identifiers
+terminal CSXIdentifierToken rw_BOOL, rw_BREAK, rw_CHAR, rw_PACKAGE, rw_CONST,
+	rw_CONTINUE, rw_ELSE, rw_IF, rw_INT, rw_PRINT, rw_READ,
+	rw_RETURN, rw_FOR, rw_VAR, rw_FUNC; // reserved words
+terminal CSXIntLitToken INTLIT; // integer literals
+terminal CSXStringLitToken STRLIT; // string literals
+terminal CSXCharLitToken CHARLIT; // character literals
+terminal CSXBoolLitToken BOOLLIT; // Boolean literals
+terminal CSXToken ASG, CAND, COLON, COMMA, COR, EQ, GEQ, GT, LBRACE,
+	LBRACKET, LEQ, LPAREN, LT, MINUS, NOT, NOTEQ, PLUS, RBRACE, RBRACKET,
+	RPAREN, SEMI, SLASH, TIMES; // operators
+
+/* Non terminals */
+
+non terminal ProgramNode program;
+non terminal VarDeclsNode varDecls;
+non terminal VarDeclNode varDecl;
+non terminal optionalSemi;
+non terminal FuncDeclsNode funcDecls;
+non terminal FuncDeclNode funcDecl;
+non terminal FormalParamsNode formals;
+non terminal FormalParamsNode someFormals;
+non terminal FormalParamNode formalDecl;
+non terminal StatementsNode stmts;
+non terminal BlockNode block;
+non terminal StatementNode stmt;
+non terminal TypeNode type;
+non terminal TypeNode optType;
+non terminal ActualParamsNode actuals;
+non terminal ActualParamsNode someActuals;
+non terminal ReadListNode readlist;
+non terminal PrintListNode printlist;
+non terminal ExprNode expr;
+non terminal ExprNode term;
+non terminal ExprNode factor;
+non terminal ExprNode pri;
+non terminal ExprNode unary;
+non terminal ExprNode unit;
+non terminal NameNode name;
+
+// precedence left rw_ELSE; // resolve dangling ELSE
+
+start with program;
+
+program ::= rw_PACKAGE IDENTIFIER:id varDecls:v funcDecls:f
+		{: RESULT = new ProgramNode(id, v, f); :}
+		;
+
+varDecls ::= varDecl:v varDecls:vs
+		{: vs.addVar(v); RESULT = vs;  :}
+	| // λ
+		{: RESULT = new VarDeclsNode();  :}
+	;
+
+varDecl ::= rw_VAR IDENTIFIER:id type:t SEMI
+		{: RESULT = new VarDeclNode(t, id); :}
+	| rw_VAR IDENTIFIER:id ASG expr:e SEMI
+		{: RESULT = new VarDeclNode(null, id, e); :}
+	| rw_VAR IDENTIFIER:id type:t LBRACKET INTLIT:i RBRACKET SEMI
+		{: RESULT = new VarDeclNode(t, id, i); :}
+	| rw_CONST IDENTIFIER:id ASG expr:e SEMI 
+		{: RESULT = new VarDeclNode(id, e); :}
+	;
+
+funcDecls ::= funcDecl:f funcDecls:fs
+		{: fs.addFunc(f); RESULT = fs;  :}
+	| // λ
+		{: RESULT = new FuncDeclsNode();  :}
+	;
+
+funcDecl ::=
+	rw_FUNC IDENTIFIER:id LPAREN formals:as RPAREN optType:t block:b
+		{: RESULT = new FuncDeclNode(t, id, as, b);  :}
+	; 
+
+formals ::= someFormals:d
+		{: RESULT = d; :}
+	| // λ
+		{: RESULT = new FormalParamsNode(); :}
+	;
+
+someFormals ::= formalDecl:f
+		{: RESULT = new FormalParamsNode(f); :}
+	| formalDecl:f COMMA someFormals:ff
+		{: RESULT = ff.addFormal(f); :}
+	;
+
+formalDecl ::= IDENTIFIER:id type:t
+		{: RESULT = new FormalParamNode(t, id, false);  :}
+	| IDENTIFIER:id LBRACKET RBRACKET type:t
+		{: RESULT = new FormalParamNode(t, id, true);  :}
+	;
+
+optType ::= type:t
+	{: RESULT = t; :}
+	| // λ
+	{: RESULT = null; :}
+	;
+
+stmts ::= stmt:s stmts:ss
+		{: ss.addStatement(s); RESULT = ss; :}
+	| // λ
+		{: RESULT = new StatementsNode(); :}
+	;
+
+stmt ::= rw_IF:i expr:e block:b 
+		{: RESULT = new IfNode(i, e, b, null);  :}
+	| rw_IF:i expr:e block:b1 rw_ELSE block:b2
+		{: RESULT = new IfNode(i, e, b1, b2);  :}
+	| rw_FOR:w expr:e block:b
+		{: RESULT = new ForNode(w, null, e, b); :}
+	| IDENTIFIER:id COLON rw_FOR:w expr:e block:b
+		{: RESULT = new ForNode(w, id, e, b); :}
+	| name:n ASG:a expr:e SEMI
+		{: RESULT = new AsgNode(a, n, e); :}
+	| rw_READ:t readlist:r SEMI
+		{: RESULT = new ReadNode(t, r); :}
+	| rw_PRINT:t printlist:p SEMI
+		{: RESULT = new PrintNode(t, p); :}
+	| IDENTIFIER:id LPAREN actuals:a RPAREN SEMI
+		{: RESULT = new CallStatementNode(id, a); :}
+	| rw_RETURN:r SEMI
+		{: RESULT = new ReturnNode(r, null);  :}
+	| rw_RETURN:r expr:e SEMI
+		{: RESULT = new ReturnNode(r, e);  :}
+	| rw_BREAK IDENTIFIER:id SEMI
+		{: RESULT = new BreakNode(id);  :}
+	| rw_CONTINUE IDENTIFIER:id SEMI
+		{: RESULT = new ContinueNode(id);  :}
+	| block:b
+		{: RESULT = b;  :}
+	;
+
+block ::= LBRACE:t varDecls:fs stmts:ss RBRACE optionalSemi
+		{: RESULT = new BlockNode(t, fs, ss);  :}
+	;
+
+optionalSemi ::= SEMI
+	|  // λ
+	;
+
+type ::= rw_INT:i
+	{: RESULT = new TypeNode(i); :}
+	| rw_CHAR:c
+	{: RESULT = new TypeNode(c); :}
+	| rw_BOOL:b 
+	{: RESULT = new TypeNode(b); :}
+	;
+
+actuals ::= someActuals:a
+		{: RESULT = a; :}
+	| // λ
+		{: RESULT = new ActualParamsNode(); :}
+	;
+
+someActuals ::= expr:e
+		{: RESULT = new ActualParamsNode(e); :}
+	| expr:e COMMA someActuals:aa
+		{: RESULT = aa.addActual(e); :}
+	;
+
+readlist ::= name:n COMMA readlist:r
+		{: r.addName(n); RESULT = r;  :}
+	| name:n
+		{: RESULT = new ReadListNode(n); :}
+	;
+
+printlist ::= expr:e COMMA printlist:p
+		{: p.addExpr(e); RESULT = p; :}
+	| expr:e
+		{: RESULT = new PrintListNode(e); :}
+	;
+
+expr ::= expr:e COR term:t
+	{: RESULT = new OpNode(sym.COR, e, t); :}
+	| expr:e CAND term:t
+	{: RESULT = new OpNode(sym.CAND , e, t); :}
+	| term:t 
+	{: RESULT = t; :}
+	;
+
+term ::= factor:f1 LT factor:f2
+	{: RESULT = new OpNode(sym.LT , f1, f2); :}
+	| factor:f1 GT factor:f2
+	{: RESULT = new OpNode(sym.GT , f1, f2); :}
+	| factor:f1 LEQ factor:f2
+	{: RESULT = new OpNode(sym.LEQ , f1, f2); :}
+	| factor:f1 GEQ factor:f2
+	{: RESULT = new OpNode(sym.GEQ , f1, f2); :}
+	| factor:f1 EQ factor:f2
+	{: RESULT = new OpNode(sym.EQ , f1, f2); :}
+	| factor:f1 NOTEQ factor:f2
+	{: RESULT = new OpNode(sym.NOTEQ , f1, f2); :}
+	| factor:f 
+	{: RESULT = f; :}
+	;
+
+factor ::= factor:f PLUS pri:p
+	{: RESULT = new OpNode(sym.PLUS , f, p); :}
+	| factor:f MINUS pri:p
+	{: RESULT = new OpNode(sym.MINUS , f, p); :}
+	| pri:f
+	{: RESULT = f; :}
+	;
+
+pri ::= pri:f TIMES unary:u
+	{: RESULT = new OpNode(sym.TIMES , f, u); :}
+	| pri:f SLASH unary:u
+	{: RESULT = new OpNode(sym.SLASH , f, u); :}
+	| unary:u
+	{: RESULT = u; :}
+	;
+
+unary ::= NOT unary:f
+	{: RESULT = new OpNode(sym.NOT , f, null); :}
+	| type:t LPAREN expr:e RPAREN
+	{: RESULT = new CastNode(t, e); :}
+	| unit:u
+	{: RESULT = u; :}
+	;
+
+unit ::=  name:n
+		{: RESULT = n; :}
+	| IDENTIFIER:id LPAREN actuals:a RPAREN
+		{: RESULT = new CallExpressionNode(id, a); :}
+	| INTLIT:v
+		{: RESULT = new IntLitNode(v); :}
+	| CHARLIT:v
+		{: RESULT = new CharLitNode(v); :}
+	| BOOLLIT:v
+		{: RESULT = new BoolLitNode(v); :}
+	| STRLIT:v
+		{: RESULT = new StrLitNode(v); :}
+	| LPAREN expr:e RPAREN
+		{: RESULT = e; :}
+	;
+
+name ::= IDENTIFIER:id
+		{: RESULT = new NameNode(id, null); :}
+	| IDENTIFIER:id LBRACKET expr:e RBRACKET 
+		{: RESULT = new NameNode(id, e); :}
+	;
+
+// vim:filetype=java:
+

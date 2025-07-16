@@ -1,0 +1,31 @@
+CSX_go program parsed correctly.
+Here is its unparsing:
+1:	package foo
+2:	var a int;
+3:	var b int[34];
+4:	var c = 45;
+5:	const d = false;
+6:	var x = (3 + ('c' / 5)) != (x * y);
+8:	func bar(a int, b []bool) int {
+9:	    var c = b[45];
+10:	    return;
+11:	    for c || 4 {
+12:	        var d int;
+13:	        if 2 == int(4 + 5) {
+14:	            if 5 {
+15:	                matches();
+14:	            } else {
+17:	                matches(what, foo(a), 4 / 5);
+14:	            }
+13:	        }
+11:	    } // for
+8:	} // func bar
+23:	func foo(a int, b []int) int {
+24:	    return a[4 + 5] + 4;
+25:	    read a, b[1], c;
+26:	    print a, b[2], c;
+23:	} // func foo
+29:	func baz() bool {
+30:	    return 1;
+29:	} // func baz
+1:	// package foo

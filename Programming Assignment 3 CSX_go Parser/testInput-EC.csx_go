@@ -1,0 +1,11 @@
+package bar 
+
+	func foo() int {
+	// func bar(a int, b[] bool) int {
+		lab1: for c || 4 {
+			lab2: for true {
+				continue lab1;
+				break lab2;
+			}
+		}
+	} // foo

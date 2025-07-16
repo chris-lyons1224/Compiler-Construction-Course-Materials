@@ -1,0 +1,100 @@
+package globalVar
+
+	var globalVar int; // OK
+
+	func badFunction(a int, b[]char, a char) int { // error: duplicate formal
+		var b int; // error: duplicate declaration
+		var c = 0; // OK
+		var d = true; // OK
+		var e = c + 4; // OK
+		var f = C; // bad
+		globalVar = 3; // OK
+	} // error: no return from badFunction
+	func intFunction(a int, b[]char) int {
+		a = intFunction(3, b); // OK
+		return false; // error: bad return type
+		return;  // error: must return a value
+	} // intFunction
+	func voidFunction() {
+		var globalVar char; // OK
+		const aBool = globalVar == 'a'; // not yet assigned
+		var charArray char[10];
+		charArray['c'] = 'c'; // OK
+		globalVar = 'a'; // OK
+		if aBool == true {
+			var aBool int; // OK
+			read globalVar ; // OK
+		}
+		a = 3; // error: a is not declared
+		return aBool; // error: return from void function
+		charArray = charArray; // OK
+		charArray = "1234567890"; // OK
+		charArray = "123456789"; // String too short
+	} // voidFunction
+	func main(){
+		const b = 20;
+		var myIntVar = 55; 
+		var myBoolVar bool;
+		var a int[0]; var a1 int[1]; // error (a): bad length
+		var c char[100];
+		myIntVar = myBoolVar; // error: RHS not compatible with LHS
+		myIntVar = a1[1] + a1['c'];
+		myIntVar = a1["string"]; // error: bad subscript type
+		myIntVar = myIntVar[1]; // error: applying subscript to non-array
+		a1 = 2; // error: assigning int to int array
+		myIntVar = myIntVar;
+		if 4 { // error: bad type for condition
+			b = 1; // error: assign to a const
+		} else {
+			main = 2; // error: assign to a function
+		}
+		// foo:
+		for 4 { // error: bad type for condition
+			var a int; // OK
+			var a int; // error: duplicate
+			for true {
+				// break fooo; // error: bad label
+				// continue fooo; // error: bad label
+				// break foo; // no error here
+				// continue foo; // no error here
+				// read foo; // error: can't read label
+				a = 'c' + 4; // OK
+			} // for true
+		} // for 4
+		// foo: for true { print b;} // error: re-use of foo
+		// for true {break foo;} // error: foo not in use now.
+		myIntVar = foo(); // error: call to non-declared function
+		myIntVar = int("a string"); // error: cannot cast a string
+		myBoolVar = ! 13; // error: bad type parameter to "not"
+		myIntVar = "string" + 3; // error: bad left type
+		myIntVar = 3 + "string"; // error: bad right type
+		myBoolVar = 3 && false; // error: bad left type
+		myBoolVar = false && 3; // error: bad right type
+		myBoolVar = false != a; // error: bad right type
+		myBoolVar = 4 == false; // error: bad right type
+		myBoolVar = "string" == false; // error: bad left type
+		myBoolVar = 'a' != 4; // OK
+		myBoolVar = (3 + 4) == false; // error: bad right type
+		myBoolVar = a1 == a1; // error: cannot compare arrays
+		myBoolVar = (1 == 'c') || (false <= true); // OK
+		read b; // error: read into constant
+		read a1; // error: read into array
+		read a1[4]; // OK
+		print a1, a1[0], false, 'c', main, b, "string"; // error: print int array, function
+		bar(); // error: bar is not declared
+		a1(); // error: a is a variable, not a function
+		b(); // error: b is a constant, not a function
+		myIntVar = intFunction(b); // error: wrong number of parameters
+		myIntVar = intFunction(b, c); // OK
+		myIntVar = intFunction(b, b); // error: wrong type of 2nd parameter
+		myIntVar = intFunction(b, b); // error: wrong type of 2nd parameter
+		intFunction(b, c); // error: can't call as statement
+	} // main
+
+	func globalVar() int { // error: duplicate declaration
+		globalVar = 4;
+		return globalVar;
+	} // globalVar
+
+	// error: last function isn't void main().
+

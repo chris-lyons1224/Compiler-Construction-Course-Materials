@@ -1,0 +1,49 @@
+CSX_go program parsed correctly.
+Here is its unparsing:
+1:	package test
+6:	var a = 0;
+7:	var b = ~123;
+8:	var bigPos = int value out of range; reduced
+2147483647;
+9:	var bigNeg = int value out of range; reduced
+~-2147483648;
+10:	var ja = true;
+11:	var nein = false;
+12:	var c = 'c';
+13:	var nl = '\n';
+14:	var tab = '\t';
+15:	var bslash = '\\';
+16:	var tic = '\'';
+17:	const ten = 10;
+18:	var ar int[100];
+19:	var str = " Ans = ";
+21:	func p(j int) {
+22:	    print "Ans = ", j + 1;
+21:	} // func p
+25:	func f(i int) int {
+26:	    ar[i] = 100;
+27:	    return i + 1;
+25:	} // func f
+30:	func testMany() bool {
+31:	    read b;
+33:	    if b || true {
+34:	        b = b && false;
+33:	    } else {
+36:	        b = !(b || true);
+33:	    }
+39:	    L: for i != 0 {
+40:	        i = (i * i) / 2;
+40:	        break L;
+41:	        i = i / (i - 2);
+41:	        continue L;
+42:	        continue a;
+39:	    } // L
+45:	    if (((i == 10) || (i < 21)) || (i > ~17)) || (i != 123) {
+46:	        print i;
+47:	        p(17);
+45:	    }
+50:	    if (i >= f(~3)) || (i <= f(i - 1)) {
+51:	        print i, f(i), "\n";
+50:	    }
+30:	} // func testMany
+1:	// package test

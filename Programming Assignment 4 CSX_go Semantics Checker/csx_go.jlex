@@ -1,0 +1,451 @@
+// Raphael Finkel's solution to Project 2, 4/2013 
+// Modified for Project 3: removed definition of class Symbol, added import of
+// java_cup.rutime.
+// Modified 2018 for CSX_go
+// Modified 2020 for CSX_go (added binlit, simplified var decl)
+
+import java_cup.runtime.*;
+import java.util.Locale;
+
+class CSXToken {
+	final int linenum;
+	final int colnum;
+	CSXToken(int line, int col) {
+		linenum = line;
+		colnum = col;
+	}
+} // class CSXToken
+
+class CSXIntLitToken extends CSXToken {
+	final int intValue;
+	CSXIntLitToken(int val, int line, int col) {
+		super(line, col);
+		intValue = val;
+	};
+} // class CSXIntLitToken
+
+class CSXBadIntLitToken extends CSXIntLitToken {
+	CSXBadIntLitToken(int value, int line, int col) {
+		super(value, line, col);
+	};
+} // class CSXBadIntLitToken
+
+class CSXBoolLitToken extends CSXToken {
+	final boolean boolValue;
+	CSXBoolLitToken(boolean val, int line, int col) {
+		super(line, col);
+		boolValue = val;
+	};
+} // class CSXIntBoolToken
+
+class CSXIdentifierToken extends CSXToken {
+	final String identifierText;
+	final String normalText;
+	CSXIdentifierToken(String text, int line, int col) {
+		super(line, col);
+		identifierText = text;
+		normalText = identifierText;
+	}
+} // class CSXIdentifierToken
+
+class CSXErrorToken extends CSXToken {
+	final char errorChar;
+	CSXErrorToken(char text, int line, int col) {
+		super(line, col);
+		errorChar = text;
+	}
+} // class CSXIdentifierToken
+
+class CSXCharLitToken extends CSXToken {
+	final String charText; // could be several characters, like \'
+	final char effectiveChar;
+	CSXCharLitToken(String text, int line, int col) {
+		super(line, col);
+		charText = text;
+		effectiveChar = text.substring(1, text.length()-1).
+			replace("\\n", "\n").replace("\\t", "\t").
+			replace("\\\\", "\\").replace("\\'", "'").charAt(0);
+		// System.out.println("effective char: " + effectiveChar);
+	}
+} // class CSXCharLitToken
+
+class CSXStringLitToken extends CSXToken {
+	final String stringText;
+		// Full text of string literal, including quotes & escapes
+	final String effectiveText;
+		// no quotes, all escapes turned into their actual values
+		CSXStringLitToken(String text, int line, int col) {
+		super(line, col);
+		stringText = text;
+		effectiveText = text.substring(1, text.length()-1).
+			replace("\\n", "\n").replace("\\t", "\t").
+			replace("\\\\", "\\").replace("\\\"", "\"");
+		// System.out.println("effectively: " + effectiveText);
+	}
+} // class CSXStringLitToken
+
+// This class tracks line and column numbers
+class Pos {
+	static int  linenum = 1; // of current token
+	static int  colnum = 1; // start of current token 
+	static int  line = 1; // after current token
+	static int  col = 1; // after current token
+	static void setpos() { // set starting position for current token
+		linenum = line;
+		colnum = col;
+	}
+	static void setpos(int width) { 
+		linenum = line;
+		colnum = col;
+		col += width;
+	}
+	private Pos() {
+		// no instances allowed.
+	}
+} // class Pos
+
+@SuppressWarnings("fallthrough") // Yylex generates fallthrough warnings
+
+%%
+
+DIGIT = [0-9]
+LETTER = [a-zA-Z]
+PRINTABLE = [ !#-\[\]-~] // \t may not appear in a string
+STRINGSPECIAL = (\\\" | \\\\ | \\n | \\t )
+CHARSPECIAL = (\\' | \\\\ | \\n | \\t | \")
+
+%type Symbol
+%ignorecase
+%eofval{
+	return new Symbol(sym.EOF, new CSXToken(0, 0));
+%eofval}
+
+
+%%
+
+// { reserved words.  We treat them identically: as special identifiers.
+"bool" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_BOOL,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"break" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_BREAK,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"var" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_VAR,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"func" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_FUNC,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"char" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_CHAR,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"package" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_PACKAGE,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"const" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_CONST,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"continue" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_CONTINUE,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"else" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_ELSE,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"if" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_IF,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"int" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_INT,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"read" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_READ,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"return" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_RETURN,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"true" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.BOOLLIT,
+			new CSXBoolLitToken(true, Pos.linenum, Pos.colnum));
+}
+
+"false" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.BOOLLIT,
+			new CSXBoolLitToken(false, Pos.linenum, Pos.colnum));
+}
+
+"for" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_FOR,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+
+"print" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.rw_PRINT,
+		new CSXIdentifierToken(yytext().toLowerCase(Locale.US), Pos.linenum, Pos.colnum)); 
+}
+// end of reserved words. }
+
+// identifiers
+{LETTER} ({LETTER} | {DIGIT})* {
+	Pos.setpos(yylength());
+	return new Symbol(sym.IDENTIFIER,
+		new CSXIdentifierToken(yytext(), Pos.linenum, Pos.colnum)); 
+}
+
+// integer literals
+("~")?{DIGIT}+	{
+	Pos.setpos(yylength());
+	try {
+		final int value = Integer.parseInt(yytext().replace('~', '-'));
+		return new Symbol(sym.INTLIT,
+			new CSXIntLitToken(value, Pos.linenum, Pos.colnum));
+	} catch (NumberFormatException dummy) {
+		return new Symbol(sym.INTLIT,
+			new CSXBadIntLitToken(
+				(yytext().charAt(0) == '~')
+					? Integer.MIN_VALUE : Integer.MAX_VALUE,
+			Pos.linenum, Pos.colnum));
+	} 
+}
+
+// string literals
+"\x22"({PRINTABLE} | {STRINGSPECIAL})*"\x22" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.STRLIT,
+		new CSXStringLitToken(yytext(), Pos.linenum, Pos.colnum));
+}
+
+// character literals
+"'"({PRINTABLE} | {CHARSPECIAL})"'" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.CHARLIT,
+		new CSXCharLitToken(yytext(), Pos.linenum, Pos.colnum));
+}
+
+// single-line comment (must come before the "/" operator)
+"//" (.)* "\n" {
+	Pos.line += 1;
+	Pos.col = 1;
+}
+
+// multi-line comment
+"%%" (("%" | "") [^%])* "%%" {
+	// count the number of newlines.
+	int newlines = 0;
+	int newLinePos = 0;
+	String content = yytext();
+	while (content.indexOf('\n', newLinePos) >= 0) {
+		newLinePos = content.indexOf('\n', newLinePos) + 1;
+		newlines += 1;
+	}
+	Pos.line += newlines;
+	if (newlines == 0) {
+		Pos.col += yylength();
+	} else {
+		Pos.col = content.length() - newLinePos + 1;
+	}
+} // multi-line comment
+
+// { operator symbols
+
+"(" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.LPAREN,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+")" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.RPAREN,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"[" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.LBRACKET,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"]" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.RBRACKET,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"=" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.ASG,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+";" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.SEMI,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"+" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.PLUS,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"-" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.MINUS,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"*" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.TIMES,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"/" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.SLASH,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"==" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.EQ,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"!=" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.NOTEQ,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"&&" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.CAND,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"||" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.COR,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"<" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.LT,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+">" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.GT,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"<=" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.LEQ,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+">=" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.GEQ,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"," {
+	Pos.setpos(yylength());
+	return new Symbol(sym.COMMA,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"!" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.NOT,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"{" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.LBRACE,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+"}" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.RBRACE,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+
+":" {
+	Pos.setpos(yylength());
+	return new Symbol(sym.COLON,
+		new CSXToken(Pos.linenum, Pos.colnum));
+}
+// end of operator symbols }
+
+// { white space
+\n	{
+	Pos.line += 1;
+	Pos.col = 1;
+}
+
+" "	| \t {
+	Pos.setpos(yylength()); // tab just counts for one position
+}
+// end of white space }
+
+// catch-all for errors
+. {
+	Pos.setpos(yylength());
+	final int error = 1;
+	return new Symbol(error, 
+		new CSXErrorToken(yytext().charAt(0), Pos.linenum, Pos.colnum));
+}
+	
+// vim:filetype=java:
