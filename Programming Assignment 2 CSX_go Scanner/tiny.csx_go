@@ -1,0 +1,23 @@
+123 != 120+3
++12345 + 17
+~23
+~0232323232321 7777777777777777777777777777777777777777
+bool bOol
+bool break char class const continue
+else false If iNt read return
+true void while print
+id1 id12323232312323123123 Id1 abA
+"simple string"
+"complex \" string \n with \t lots \\ of [special] stuff"
+'a' ' ' '\'' '\n' '\t' '\\' 'aa'
+" string with ## in it "
+
+( ) [ ] = ; + − * / == != && ||
+start of ## this is 
+a comment over
+three lines ## toHere
+< > <= >= , ! { } :
+
+comment here // this is a comment
+next line
+## another comment here. ##

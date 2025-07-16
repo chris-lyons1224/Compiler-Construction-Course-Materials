@@ -1,0 +1,32 @@
+This directory holds Raphael Finkel's solution to Assignment 2 for CS541,
+programmed 4/2013 and updated several times thereafter.
+It implements a scanner for CSX in these files:
+
+	P2.java: main program, token printer
+	csx.jlex: JFlex scanner specification
+	sym.java: slightly hand-modified version of token numbers
+
+The implementation uses these techniques:
+
+	%ignorecase causes identifiers to be case-insensitive.
+	Pos.setpos() stores the current line and column.
+	The regular expressions are essentially the same as in the assignment.
+	Character and string tokens store both the original content (with
+		surrounding quotes and internal escapes) and the effective text (without
+		surrounding quotes and with escapes expanded).
+	Integer literals that are out of range return an instance of
+		CSXBadIntLitToken, a subclass of CSXIntLitToken; the scanner itself does
+		not generate warnings, leaving that to P2.java.
+	Tabs are not allowed in string literals; they must use \t to represent tabs.
+	@SuppressWarnings("fallthrough") in csx.jlex suppresses Java warnings as it
+		compiles the derived file Yylex.java.
+
+The Makefile has these rules:
+
+	default: compile the program
+	test: execute the program with $GOAL.csx as data; by default, GOAL=test
+		(expected output: test.out) Other input files: input (very large; based
+		on a student's test case), tiny.  
+	style: check the style of the program; there are no significant
+		style errors.
+	clean: remove results of compilation and tags
